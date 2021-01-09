@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.petsforever.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "LevelStorage$SessionMixin",
+    "MinecraftServerAccessor",
+    "TameableEntityMixin"
+  ],
+  "client": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
