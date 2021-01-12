@@ -20,7 +20,7 @@ import net.minecraft.world.level.storage.LevelStorage;
 import org.jetbrains.annotations.NotNull;
 
 public class Pets implements ModInitializer{
-    @NotNull public static final String MOD_ID = "gud_pets";
+    @NotNull public static final String MOD_ID = "petsforever";
     
     @Override
     public void onInitialize(){

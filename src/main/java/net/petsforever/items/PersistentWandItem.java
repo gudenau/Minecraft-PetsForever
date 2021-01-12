@@ -23,27 +23,27 @@ public class PersistentWandItem extends Item{
         }
         
         if(!(entity instanceof PetEntity)){
-            user.sendMessage(new TranslatableText("message.gud_pets.not_a_pet"), true);
+            user.sendMessage(new TranslatableText("message.petsforever.not_a_pet"), true);
             return ActionResult.FAIL;
         }
         
-        UUID ownerId = ((PetEntity<?>)entity).gud_pets$getOwnerId();
+        UUID ownerId = ((PetEntity<?>)entity).petsforever$getOwnerId();
         if(!ownerId.equals(user.getUuid())){
-            user.sendMessage(new TranslatableText("message.gud_pets.not_yours"), true);
+            user.sendMessage(new TranslatableText("message.petsforever.not_yours"), true);
             return ActionResult.FAIL;
         }
         
         boolean result = SharedPetManager.getInstance()
             .getUserInfo(user)
-            .registerPet((PetEntity<?>)entity);
+            .registerPet(entity);
         
         if(result){
-            user.sendMessage(new TranslatableText("message.gud_pets.registered"), true);
+            user.sendMessage(new TranslatableText("message.petsforever.registered"), true);
             stack.decrement(1);
             user.sendToolBreakStatus(hand);
             return ActionResult.SUCCESS;
         }else{
-            user.sendMessage(new TranslatableText("message.gud_pets.too_many_pets"), true);
+            user.sendMessage(new TranslatableText("message.petsforever.too_many_pets"), true);
             return ActionResult.FAIL;
         }
     }

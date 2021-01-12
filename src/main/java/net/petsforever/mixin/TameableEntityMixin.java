@@ -1,12 +1,12 @@
 package net.petsforever.mixin;
 
 import java.util.UUID;
-import net.gudenau.minecraft.pets.api.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.TameableEntity;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Util;
@@ -33,13 +33,23 @@ public abstract class TameableEntityMixin<E extends Entity> extends AnimalEntity
     }
     
     @Override
-    public UUID gud_pets$getId(){
+    public UUID petsforever$getId(){
         return getUuid();
     }
     
     @Override
-    public UUID gud_pets$getOwnerId(){
+    public UUID petsforever$getOwnerId(){
         return getOwnerUuid();
+    }
+    
+    @Override
+    public CompoundTag petsforever$toTag(){
+        return toTag(new CompoundTag());
+    }
+    
+    @Override
+    public void petsforever$fromTag(CompoundTag tag){
+        fromTag(tag);
     }
     
     @Inject(

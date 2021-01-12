@@ -54,7 +54,7 @@ public class SharedPetManagerImpl implements SharedPetManager{
                     CompoundTag tag = NbtIo.readCompressed(stream);
                     for(String key : tag.getKeys()){
                         UUID keyId = UUID.fromString(key);
-                        users.put(keyId, UserInfoImpl.fromTag(tag.getCompound(key)));
+                        users.put(keyId, UserInfoImpl.fromTag(savePath, tag.getCompound(key)));
                     }
                 }
             }
@@ -135,7 +135,7 @@ public class SharedPetManagerImpl implements SharedPetManager{
     public UserInfo getUserInfo(PlayerEntity player){
         return getUserInfo(player.getUuid()).orElseGet(()->{
             usersLock.writeLock().lock();
-            UserInfo info = users.computeIfAbsent(player.getUuid(), UserInfoImpl::new);
+            UserInfo info = users.computeIfAbsent(player.getUuid(), (id)->new UserInfoImpl(savePath, id));
             usersLock.writeLock().unlock();
             return info;
         });

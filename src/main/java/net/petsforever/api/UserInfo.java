@@ -12,7 +12,24 @@ public interface UserInfo{
     Optional<PetInfo<?>> getPetInfo(UUID petId);
     int getPetLimit();
     int getPetCount();
-    <T extends Entity> boolean registerPet(PetEntity<T> pet);
-    <T extends Entity> Optional<T> summonEntity(PetInfo<T> info, World world);
-    <T extends Entity> boolean ownsPet(PetEntity<T> pet);
+    
+    @SuppressWarnings("unchecked")
+    default <T extends Entity & PetEntity<T>> boolean registerPet(Entity entity){
+        if(!(entity instanceof PetEntity<?>)){
+            return false;
+        }
+        return registerPet((PetEntity<T>)entity);
+    }
+    
+    @SuppressWarnings("unchecked")
+    default <T extends Entity & PetEntity<T>> boolean ownsPet(Entity entity){
+        if(!(entity instanceof PetEntity<?>)){
+            return false;
+        }
+        return ownsPet((PetEntity<T>)entity);
+    }
+    
+    <T extends Entity & PetEntity<T>> boolean registerPet(PetEntity<T> pet);
+    <T extends Entity & PetEntity<T>> Optional<T> summonEntity(PetInfo<T> info, World world);
+    <T extends Entity & PetEntity<T>> boolean ownsPet(PetEntity<T> pet);
 }

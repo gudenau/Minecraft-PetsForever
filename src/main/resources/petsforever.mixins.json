@@ -6,6 +6,7 @@
   "mixins": [
     "LevelStorage$SessionMixin",
     "MinecraftServerAccessor",
+    "PlayerEntityMixin",
     "TameableEntityMixin"
   ],
   "client": [],

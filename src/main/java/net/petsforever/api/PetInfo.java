@@ -6,7 +6,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public interface PetInfo<T extends Entity>{
+public interface PetInfo<T extends Entity & PetEntity<T>>{
     EntityType<T> getType();
     UUID getId();
     void setSummoned(boolean summoned);

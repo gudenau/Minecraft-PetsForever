@@ -1,6 +1,7 @@
 package net.petsforever.impl;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -15,25 +16,28 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.World;
 
 class UserInfoImpl implements UserInfo{
+    private final Path savePath;
     private final UUID id;
     private final Map<UUID, PetInfo<?>> pets = new Object2ObjectOpenHashMap<>();
     private final ReadWriteLock petsLock = new ReentrantReadWriteLock();
     
-    UserInfoImpl(UUID id){
+    UserInfoImpl(Path savePath, UUID id){
+        this.savePath = savePath;
         this.id = id;
     }
     
-    private UserInfoImpl(CompoundTag tag){
+    private UserInfoImpl(Path savePath, CompoundTag tag){
+        this.savePath = savePath;
         this.id = tag.getUuid("id");
         for(Tag rawPetTag : tag.getList("pets", NbtType.LIST)){
             CompoundTag petTag = (CompoundTag)rawPetTag;
-            PetInfo<?> petInfo = PetInfoImpl.fromTag(petTag);
+            PetInfo<?> petInfo = PetInfoImpl.fromTag(savePath, petTag);
             pets.put(petInfo.getId(), petInfo);
         }
     }
     
-    public static UserInfo fromTag(CompoundTag compound){
-        return new UserInfoImpl(compound);
+    public static UserInfo fromTag(Path savePath, CompoundTag compound){
+        return new UserInfoImpl(savePath, compound);
     }
     
     public CompoundTag toTag(){
@@ -84,17 +88,17 @@ class UserInfoImpl implements UserInfo{
     }
     
     @Override
-    public <T extends Entity> boolean registerPet(PetEntity<T> pet){
+    public <T extends Entity & PetEntity<T>> boolean registerPet(PetEntity<T> pet){
         petsLock.writeLock().lock();
         try{
             if(pets.size() >= getPetLimit()){
                 return false;
             }
     
-            if(!pet.gud_pets$getOwnerId().equals(id)){
+            if(!pet.petsforever$getOwnerId().equals(id)){
                 return false;
             }
-            pets.put(pet.gud_pets$getId(), PetInfoImpl.fromPet(pet));
+            pets.put(pet.petsforever$getId(), PetInfoImpl.fromPet(savePath, pet));
     
             return true;
         }finally{
@@ -103,14 +107,14 @@ class UserInfoImpl implements UserInfo{
     }
     
     @Override
-    public <T extends Entity> Optional<T> summonEntity(PetInfo<T> info, World world){
+    public <T extends Entity & PetEntity<T>> Optional<T> summonEntity(PetInfo<T> info, World world){
         return Optional.empty();
     }
     
     @Override
-    public <T extends Entity> boolean ownsPet(PetEntity<T> pet){
+    public <T extends Entity & PetEntity<T>> boolean ownsPet(PetEntity<T> pet){
         petsLock.readLock().lock();
-        boolean result = pets.containsKey(pet.gud_pets$getId());
+        boolean result = pets.containsKey(pet.petsforever$getId());
         petsLock.readLock().unlock();
         return result;
     }
